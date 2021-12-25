@@ -1,0 +1,20 @@
+# https://cirrus-ci.org/guide/writing-tasks/
+
+# C
+c_task:
+  container:
+    image: debian:unstable-20211220-slim
+
+  setup_script:
+    - apt-get update
+    - apt-get upgrade -y
+    - apt-get install --no-install-recommends -y build-essential clang
+
+  # tax-rate-schedules
+
+  matrix:
+    - name: tax-rate-schedules
+      script:
+        - cd c/tax-rate-schedules
+        - make
+        - make run
