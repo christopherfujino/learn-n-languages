@@ -22,9 +22,9 @@ REMOTE_DEB_PACKAGE="https://storage.googleapis.com/dart-archive/channels/beta/re
 
 LOCAL_DEB_PACKAGE='dart.deb'
 
+curl -l -o "$LOCAL_DEB_PACKAGE" "$REMOTE_DEB_PACKAGE"
+
 ls -alh "./$LOCAL_DEB_PACKAGE"
 cat "./$LOCAL_DEB_PACKAGE"
-
-curl -l -o "$LOCAL_DEB_PACKAGE" "$REMOTE_DEB_PACKAGE"
 
 dpkg -i "./$LOCAL_DEB_PACKAGE"
