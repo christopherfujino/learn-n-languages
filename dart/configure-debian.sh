@@ -6,7 +6,8 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 apt-get update
 apt-get upgrade -y
 apt-get install --no-install-recommends -y \
-  build-essential
+  build-essential \
+  curl
 
 DART_VERSION='2.16.0-80.1.beta'
 #DART_ARCHIVE="https://storage.googleapis.com/dart-archive/channels/beta/release/$DART_VERSION/sdk/dartsdk-linux-x64-release.zip"
