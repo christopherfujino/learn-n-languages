@@ -11,10 +11,7 @@ c_task:
     - apt-get install --no-install-recommends -y build-essential clang
 
   # tax-rate-schedules
-
-  matrix:
-    - name: tax-rate-schedules
-      test_script:
-        - cd c/tax-rate-schedules
-        - make
-        - make run
+  tax_rate_schedules_script:
+    - cd c/tax-rate-schedules
+    - make
+    - make run
