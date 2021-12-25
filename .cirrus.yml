@@ -14,7 +14,7 @@ c_task:
 
   matrix:
     - name: tax-rate-schedules
-      script:
+      test_script:
         - cd c/tax-rate-schedules
         - make
         - make run
