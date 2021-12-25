@@ -13,5 +13,15 @@ c_task:
 
   # tax-rate-schedules
   tax_rate_schedules_script:
-    - cd c/tax-rate-schedules
-    - ./test.sh
+    - ./c/tax-rate-schedules/test.sh
+
+go_task:
+  container:
+    image: ${DOCKER_IMAGE}
+
+  setup_script:
+    - /bin/sh ./go/configure-debian.sh
+
+  # tax-rate-schedules
+  tax_rate_schedules_script:
+    - ./go/tax-rate-schedules/test.sh

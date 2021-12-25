@@ -10,7 +10,7 @@ typedef struct LimitRate {
   double rate;
 } LimitRate;
 
-LimitRate schedules[] = {
+const LimitRate schedules[] = {
   { .limit = 622050.0, .rate = 0.37 },
   { .limit = 414701, .rate = 0.35},
   { .limit = 326600, .rate = 0.32},
