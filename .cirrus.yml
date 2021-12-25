@@ -9,7 +9,7 @@ c_task:
     image: ${DOCKER_IMAGE}
 
   setup_script:
-    - /bin/sh ./c/tax-rate-schedules/configure-debian.sh
+    - /bin/sh ./c/configure-debian.sh
 
   # tax-rate-schedules
   tax_rate_schedules_script:
