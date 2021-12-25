@@ -1,0 +1,17 @@
+# https://cirrus-ci.org/guide/writing-tasks/
+
+env:
+  DOCKER_IMAGE: debian:stable-20211220-slim
+
+# C
+c_task:
+  container:
+    image: ${DOCKER_IMAGE}
+
+  setup_script:
+    - /bin/sh ./c/configure-debian.sh
+
+  # tax-rate-schedules
+  tax_rate_schedules_script:
+    - cd c/tax-rate-schedules
+    - ./test.sh
