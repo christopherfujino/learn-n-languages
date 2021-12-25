@@ -4,9 +4,13 @@ OBJECTS = main.o
 BUILD_DIR = out
 BINARY = $(BUILD_DIR)/main
 
-main: main.o $(BUILD_DIR)
+$(BINARY): main.o $(BUILD_DIR)
 	echo 'starting release build at $(BINARY)'
 	$(CC) -o $(BINARY) $(OBJECTS)
+
+run: $(BINARY)
+	echo 'running binary...'
+	$(BINARY)
 
 $(OBJECTS): main.c
 	echo 'compile source files.'
