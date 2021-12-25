@@ -1,0 +1,14 @@
+name: tax_rate_schedules
+publish_to: none
+description: > 
+  Calculate your tax rate.
+version: 0.1.0
+environment:
+  sdk: '>=2.15.0 <3.0.0'
+
+#dependencies:
+#  efts: ^2.0.4
+#  transmogrify: ^0.4.0
+#
+#dev_dependencies:
+#  test: '>=1.15.0 <2.0.0'
