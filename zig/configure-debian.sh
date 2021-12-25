@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
+set -euv
+
 apt-get update
 apt-get upgrade -y
 # xz-utils to decompress tarballs
 apt-get install --no-install-recommends -y \
   curl \
+  ca-certificates \
   xz-utils
 
 ZIG_VERSION='0.9.0'
