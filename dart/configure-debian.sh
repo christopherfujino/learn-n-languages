@@ -18,7 +18,7 @@ apt-get install --no-install-recommends -y \
 DART_VERSION='2.16.0-80.1.beta'
 #DART_ARCHIVE="https://storage.googleapis.com/dart-archive/channels/beta/release/$DART_VERSION/sdk/dartsdk-linux-x64-release.zip"
 
-REMOTE_DEB_PACKAGE="https://storage.googleapis.com/dart-archive/channels/beta/release/$DART_VERSION/linux_packages/$DART_VERSION-1_amd64.deb"
+REMOTE_DEB_PACKAGE="https://storage.googleapis.com/dart-archive/channels/beta/release/$DART_VERSION/linux_packages/dart_$DART_VERSION-1_amd64.deb"
 
 LOCAL_DEB_PACKAGE='dart.deb'
 
