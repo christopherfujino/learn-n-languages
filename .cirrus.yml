@@ -6,7 +6,7 @@ c_task:
     image: debian:unstable-20211220-slim
 
   setup_script:
-    - /usr/bin/sh ./c/tax-rate-schedules
+    - /bin/sh ./c/tax-rate-schedules
 
   # tax-rate-schedules
   tax_rate_schedules_script:
