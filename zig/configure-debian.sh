@@ -20,7 +20,7 @@ curl -l -o "$ZIG_DIR/$ZIG_ARCHIVE" "https://ziglang.org/download/$ZIG_VERSION/$Z
 
 ls -alh "$ZIG_DIR/$ZIG_ARCHIVE"
 
-tar xvzf "./$ZIG_ARCHIVE"
+tar xvzf "$ZIG_DIR/$ZIG_ARCHIVE"
 
 ls -alh "$ZIG_DIR/zig-linux-x86_64-$ZIG_VERSION/zig"
 
