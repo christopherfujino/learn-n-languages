@@ -12,7 +12,12 @@ apt-get install --no-install-recommends -y \
 
 ZIG_VERSION='0.9.0'
 
-curl -lO "https://ziglang.org/download/$ZIG_VERSION/zig-linux-x86_64-$ZIG_VERSION.tar.xz"
+ZIG_ARCHIVE="zig-linux-x86_64-$ZIG_VERSION.tar.xz"
+curl -lO "https://ziglang.org/download/$ZIG_VERSION/$ZIG_ARCHIVE"
+
+tar xvzf "./$ZIG_ARCHIVE"
+
+file "$PWD/zig-linux-x86_64-$ZIG_VERSION/zig"
 
 # add zig binary to PATH
 export PATH="$PWD/zig-linux-x86_64-$ZIG_VERSION:$PATH"
