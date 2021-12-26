@@ -16,7 +16,7 @@ apt-get install --no-install-recommends -y \
 ZIG_VERSION='0.9.0'
 
 ZIG_ARCHIVE="zig-linux-x86_64-$ZIG_VERSION.tar.xz"
-curl -l -o "$ZIG_DIR/$ZIG_ARCHIVE" https://ziglang.org/download/$ZIG_VERSION/$ZIG_ARCHIVE"
+curl -l -o "$ZIG_DIR/$ZIG_ARCHIVE" "https://ziglang.org/download/$ZIG_VERSION/$ZIG_ARCHIVE"
 
 ls -alh "$ZIG_DIR/$ZIG_ARCHIVE"
 file "$ZIG_DIR/$ZIG_ARCHIVE"
