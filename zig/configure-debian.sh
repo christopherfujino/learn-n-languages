@@ -19,11 +19,10 @@ ZIG_ARCHIVE="zig-linux-x86_64-$ZIG_VERSION.tar.xz"
 curl -l -o "$ZIG_DIR/$ZIG_ARCHIVE" "https://ziglang.org/download/$ZIG_VERSION/$ZIG_ARCHIVE"
 
 ls -alh "$ZIG_DIR/$ZIG_ARCHIVE"
-file "$ZIG_DIR/$ZIG_ARCHIVE"
 
 tar xvzf "./$ZIG_ARCHIVE"
 
-file "$ZIG_DIR/zig-linux-x86_64-$ZIG_VERSION/zig"
+ls -alh "$ZIG_DIR/zig-linux-x86_64-$ZIG_VERSION/zig"
 
 # add zig binary to PATH
 export PATH="$ZIG_DIR/zig-linux-x86_64-$ZIG_VERSION:$PATH"
