@@ -2,6 +2,9 @@
 
 set -euv
 
+# //zig/
+ZIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
 apt-get update
 apt-get upgrade -y
 # xz-utils to decompress tarballs
@@ -13,14 +16,14 @@ apt-get install --no-install-recommends -y \
 ZIG_VERSION='0.9.0'
 
 ZIG_ARCHIVE="zig-linux-x86_64-$ZIG_VERSION.tar.xz"
-curl -lO "https://ziglang.org/download/$ZIG_VERSION/$ZIG_ARCHIVE"
+curl -l -o "$ZIG_DIR/$ZIG_ARCHIVE" https://ziglang.org/download/$ZIG_VERSION/$ZIG_ARCHIVE"
 
-ls -alh "./$ZIG_ARCHIVE"
-file "./$ZIG_ARCHIVE"
+ls -alh "$ZIG_DIR/$ZIG_ARCHIVE"
+file "$ZIG_DIR/$ZIG_ARCHIVE"
 
 tar xvzf "./$ZIG_ARCHIVE"
 
-file "$PWD/zig-linux-x86_64-$ZIG_VERSION/zig"
+file "$ZIG_DIR/zig-linux-x86_64-$ZIG_VERSION/zig"
 
 # add zig binary to PATH
-export PATH="$PWD/zig-linux-x86_64-$ZIG_VERSION:$PATH"
+export PATH="$ZIG_DIR/zig-linux-x86_64-$ZIG_VERSION:$PATH"
