@@ -36,3 +36,14 @@ dart_task:
   # tax-rate-schedules
   tax_rate_schedules_script:
     - ./dart/tax-rate-schedules/test.sh
+
+zig_task:
+  container:
+    image: ${DOCKER_IMAGE}
+
+  setup_script:
+    - /bin/sh ./zig/configure-debian.sh
+
+  # tax-rate-schedules
+  tax_rate_schedules_script:
+    - ./zig/tax-rate-schedules/test.sh
