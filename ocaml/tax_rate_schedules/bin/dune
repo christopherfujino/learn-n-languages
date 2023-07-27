@@ -1,0 +1,4 @@
+(executable
+ (public_name tax_rate_schedules)
+ (name main)
+ (libraries tax_rate_schedules))
