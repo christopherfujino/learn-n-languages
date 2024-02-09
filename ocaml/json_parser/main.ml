@@ -1,3 +1,14 @@
+let program =
+  {|{
+  "K1": {
+    "nested": null
+  },
+  "k2": "value",
+  "bool": [
+    true, false, 12345
+  ]
+}|}
+
 module Scanner = struct
   exception Error of string
 
@@ -39,17 +50,16 @@ module Scanner = struct
     let buf = build_string_buffer src (Buffer.create 20) idx in
     (Some (String (Buffer.contents buf)), Buffer.length buf + 2)
 
-  let build_num src num_val idx =
+  let rec scan_num src idx num_val len =
     let cur_char = String.get src idx in
     match cur_char with
     | '0' .. '9' ->
         let digit = int_of_char cur_char - int_of_char '0' in
-        (num_val * 10) + digit
-    | _ -> num_val
+        let num_val = (num_val * 10) + digit in
+        scan_num src (idx + 1) num_val (len + 1)
+    | _ -> (Some (Number num_val), len)
 
-  let scan_num src idx num_val len = (Some (Number num_val), len + 1)
-
-  let[@tail_mod_cons] rec scan src idx =
+  let rec scan src idx =
     if idx >= String.length src then []
     else
       let character = String.get src idx in
@@ -81,18 +91,119 @@ module Scanner = struct
       | Some token -> token :: scan src (idx + len)
 end
 
-let program =
-  {|{
-  "K1": {
-    "nested": null
-  },
-  "k2": "value",
-  "bool": [
-    true, false, 1
-  ]
-}|}
+module Parser = struct
+  exception Error of string
+
+  type t =
+    | String of string
+    | Number of int
+    | Null
+    | True
+    | False
+    | Array of t list
+    | Object of (string, t) Hashtbl.t
+
+  let rec parse_kvp tokens table =
+    match tokens with
+    | Scanner.String key :: Scanner.Colon :: t -> (
+        let value, t = parse_value t in
+        Hashtbl.add table key value;
+        match t with
+        | Scanner.CloseCurly :: t -> t
+        | Scanner.Comma :: t -> parse_kvp t table
+        | _ -> raise (Error "foo bar baz"))
+    | Scanner.String key :: t -> raise (Error "fuzzah")
+    | [] -> raise (Error "reached end of tokens when object key expected")
+    | a :: _ ->
+        let a_str = Scanner.to_string a in
+        let message =
+          Printf.sprintf "Expected an object key but received %s" a_str
+        in
+        raise (Error message)
+
+  and parse_object tokens table =
+    match tokens with
+    | [] -> raise (Error "reached end of tokens while parsing object")
+    | h :: t -> (
+        match h with
+        | Scanner.CloseCurly -> (Object table, t)
+        | _ ->
+            let tail = parse_kvp tokens table in
+            (Object table, tail))
+
+  and parse_array_elements tokens (elements : t list) =
+    match tokens with
+    | [] -> (elements, tokens)
+    | _ -> (
+        let value, t = parse_value tokens in
+        let elements = (value :: []) @ elements in
+        match t with
+        | [] -> raise (Error "foo")
+        | Scanner.Comma :: t -> parse_array_elements t elements
+        | Scanner.CloseBracket :: t ->
+            let new_elements = (value :: []) @ elements in
+            (new_elements, t)
+        | h :: _ -> raise (Error "unexpected token while parsing array"))
+
+  and parse_array tokens =
+    match tokens with
+    | [] -> raise (Error "reached end of tokens while parsing array")
+    | h :: t -> (
+        match h with
+        | Scanner.CloseBracket -> (Array [], t)
+        | _ ->
+            let elements, tail = parse_array_elements tokens [] in
+            (Array elements, tail))
+
+  and parse_value (tokens : Scanner.t list) =
+    match tokens with
+    | [] -> raise (Error "reached end of tokens while parsing value")
+    | head :: tail -> (
+        match head with
+        | Scanner.OpenCurly -> parse_object tail (Hashtbl.create 3)
+        | Scanner.OpenBracket -> parse_array tail
+        | Scanner.String s -> (String s, tail)
+        | Scanner.Number n -> (Number n, tail)
+        | Scanner.Null -> (Null, tail)
+        | Scanner.True -> (True, tail)
+        | Scanner.False -> (False, tail)
+        | token ->
+            let token_s = Scanner.to_string token in
+            let message =
+              Printf.sprintf "Can't parse a %s to start a value" token_s
+            in
+            raise (Error message))
+
+  let rec to_string = function
+    | String s -> "\"" ^ s ^ "\""
+    | Number i -> Printf.sprintf "%d" i
+    | Null -> "null"
+    | True -> "true"
+    | False -> "false"
+    | Array l -> (
+        let strings = List.map to_string l in
+        List.iter print_endline strings;
+        match strings with
+        | [] -> "[]"
+        | h :: t ->
+            "[" ^ List.fold_right (fun cur acc -> acc ^ ", " ^ cur) t h ^ "]")
+    | Object h ->
+        print_endline "Begin printing hashtbl...";
+        Hashtbl.iter (fun k _ -> Printf.printf "DEBUG %s\n" k) h;
+        let builder k v acc =
+          Printf.sprintf "%s\n\"%s\": %s" acc k (to_string v)
+        in
+        "{" ^ Hashtbl.fold builder h "" ^ "}"
+end
 
 let tokens = Scanner.scan program 0
 
 let () =
   List.iter (fun token -> token |> Scanner.to_string |> print_endline) tokens
+
+let () = Printf.printf "\nEnd of scanning\n\n"
+
+let () =
+  let obj, _ = Parser.parse_value tokens in
+  Printf.printf "\nEnd of parsing\n\n";
+  Parser.to_string obj |> print_endline
