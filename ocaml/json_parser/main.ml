@@ -5,7 +5,7 @@ let program =
   },
   "k2": "value",
   "bool": [
-    true, false, 12345
+    true, false, 1
   ]
 }|}
 
@@ -133,16 +133,15 @@ module Parser = struct
 
   and parse_array_elements tokens (elements : t list) =
     match tokens with
-    | [] -> (elements, tokens)
+    | [] -> raise (Error "reached end of tokens while parsing array")
     | _ -> (
         let value, t = parse_value tokens in
-        let elements = (value :: []) @ elements in
+        let elements = elements @ (value :: []) in
         match t with
         | [] -> raise (Error "foo")
         | Scanner.Comma :: t -> parse_array_elements t elements
         | Scanner.CloseBracket :: t ->
-            let new_elements = (value :: []) @ elements in
-            (new_elements, t)
+            (elements, t)
         | h :: _ -> raise (Error "unexpected token while parsing array"))
 
   and parse_array tokens =
@@ -151,7 +150,8 @@ module Parser = struct
     | h :: t -> (
         match h with
         | Scanner.CloseBracket -> (Array [], t)
-        | _ ->
+        | Scanner.Comma -> raise (Error "An array cannot start with a comma")
+        | token ->
             let elements, tail = parse_array_elements tokens [] in
             (Array elements, tail))
 
@@ -174,7 +174,7 @@ module Parser = struct
             in
             raise (Error message))
 
-  let rec to_string = function
+  and to_string = function
     | String s -> "\"" ^ s ^ "\""
     | Number i -> Printf.sprintf "%d" i
     | Null -> "null"
@@ -182,14 +182,11 @@ module Parser = struct
     | False -> "false"
     | Array l -> (
         let strings = List.map to_string l in
-        List.iter print_endline strings;
         match strings with
         | [] -> "[]"
         | h :: t ->
-            "[" ^ List.fold_right (fun cur acc -> acc ^ ", " ^ cur) t h ^ "]")
+            "[" ^ List.fold_left (fun acc cur -> acc ^ ", " ^ cur) h t ^ "]")
     | Object h ->
-        print_endline "Begin printing hashtbl...";
-        Hashtbl.iter (fun k _ -> Printf.printf "DEBUG %s\n" k) h;
         let builder k v acc =
           Printf.sprintf "%s\n\"%s\": %s" acc k (to_string v)
         in
@@ -201,9 +198,6 @@ let tokens = Scanner.scan program 0
 let () =
   List.iter (fun token -> token |> Scanner.to_string |> print_endline) tokens
 
-let () = Printf.printf "\nEnd of scanning\n\n"
-
 let () =
   let obj, _ = Parser.parse_value tokens in
-  Printf.printf "\nEnd of parsing\n\n";
   Parser.to_string obj |> print_endline
