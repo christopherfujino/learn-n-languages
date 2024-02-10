@@ -52,6 +52,8 @@ int main() {
 
   ParserValue *doc = parseObject(&listCurrent);
 
+  printValue(doc);
+
   return 0;
 }
 
@@ -304,20 +306,20 @@ void printToken(Token token) {
 
 /** Singleton for null. */
 ParserValue nullValue = {
-  .type = NULL_P,
-  .value.none = 0,
+    .type = NULL_P,
+    .value.none = 0,
 };
 
 /** Singleton for true. */
 ParserValue trueValue = {
-  .type = TRUE_P,
-  .value.none = 0,
+    .type = TRUE_P,
+    .value.none = 0,
 };
 
 /** Singleton for false. */
 ParserValue falseValue = {
-  .type = FALSE_P,
-  .value.none = 0,
+    .type = FALSE_P,
+    .value.none = 0,
 };
 
 ParserValue *parseValue(TokenNode **nodePtrPtr) {
@@ -356,7 +358,8 @@ ParserValue *parseValue(TokenNode **nodePtrPtr) {
     };
     return retValue;
   default:
-    fprintf(stderr, "Unexpected token %s\n", tokenTypeToString(node.token.type));
+    fprintf(stderr, "Unexpected token %s\n",
+            tokenTypeToString(node.token.type));
     raise(SIGABRT);
     exit(42);
   }
@@ -471,5 +474,62 @@ const char *tokenTypeToString(enum TokenType type) {
     return "TRUE_TYPE";
   case FALSE_TYPE:
     return "FALSE_TYPE";
+  }
+}
+
+void printValue(ParserValue *value) {
+  ParserValueNode_p *arrayElement = NULL;
+  KeyValuePairNode_p *keyValuePairs = NULL;
+  switch (value->type) {
+  case STRING_P:
+    printf("\"%s\"", value->value.stringVal);
+    break;
+  case NUMBER_P:
+    printf("%f", value->value.numVal);
+    break;
+  case NULL_P:
+    printf("null");
+    break;
+  case TRUE_P:
+    printf("true");
+    break;
+  case FALSE_P:
+    printf("false");
+    break;
+  case ARRAY_P:
+    printf("[");
+    arrayElement = value->value.array;
+    if (arrayElement != NULL) {
+      printValue(arrayElement->value);
+      arrayElement = arrayElement->next;
+      while (arrayElement) {
+        printf(",");
+        printValue(arrayElement->value);
+        arrayElement = arrayElement->next;
+      }
+    }
+    printf("]");
+    break;
+  case OBJECT_P:
+    printf("{");
+    keyValuePairs = value->value.keyValuePairs;
+    if (keyValuePairs != NULL) {
+      printf("\"%s\":", keyValuePairs->value.key);
+      printValue(keyValuePairs->value.value);
+
+      keyValuePairs = keyValuePairs->next;
+      while (keyValuePairs) {
+        printf(",");
+        printf("\"%s\":", keyValuePairs->value.key);
+        printValue(keyValuePairs->value.value);
+
+        keyValuePairs = keyValuePairs->next;
+      }
+    }
+    printf("}");
+    break;
+  default:
+    fprintf(stderr, "yikes\n");
+    raise(SIGABRT);
   }
 }

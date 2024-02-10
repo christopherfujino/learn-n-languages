@@ -127,4 +127,6 @@ ParserValue *parseArray(TokenNode **nodePtrPtr);
 
 TokenValue consumeToken(TokenNode **nodePtrPtr, enum TokenType type);
 
+void printValue(ParserValue *value);
+
 #endif // _JSON_PARSER_H
