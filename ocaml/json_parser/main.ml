@@ -140,8 +140,7 @@ module Parser = struct
         match t with
         | [] -> raise (Error "foo")
         | Scanner.Comma :: t -> parse_array_elements t elements
-        | Scanner.CloseBracket :: t ->
-            (elements, t)
+        | Scanner.CloseBracket :: t -> (elements, t)
         | h :: _ -> raise (Error "unexpected token while parsing array"))
 
   and parse_array tokens =
@@ -185,18 +184,16 @@ module Parser = struct
         match strings with
         | [] -> "[]"
         | h :: t ->
-            "[" ^ List.fold_left (fun acc cur -> acc ^ ", " ^ cur) h t ^ "]")
-    | Object h ->
-        let builder k v acc =
-          Printf.sprintf "%s\n\"%s\": %s" acc k (to_string v)
-        in
-        "{" ^ Hashtbl.fold builder h "" ^ "}"
+            let builder acc cur = acc ^ ", " ^ cur in
+            (* Fold from left to right, tail-recursive *)
+            "[" ^ List.fold_left builder h t ^ "]")
+    | Object obj ->
+        (* this does not handle commas in between kvps *)
+        let builder k v acc = acc ^ "\"" ^ k ^ "\":" ^ to_string v in
+        "{" ^ Hashtbl.fold builder obj "" ^ "}"
 end
 
 let tokens = Scanner.scan program 0
-
-let () =
-  List.iter (fun token -> token |> Scanner.to_string |> print_endline) tokens
 
 let () =
   let obj, _ = Parser.parse_value tokens in
