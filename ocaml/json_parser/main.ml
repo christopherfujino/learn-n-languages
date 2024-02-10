@@ -187,10 +187,18 @@ module Parser = struct
             let builder acc cur = acc ^ ", " ^ cur in
             (* Fold from left to right, tail-recursive *)
             "[" ^ List.fold_left builder h t ^ "]")
-    | Object obj ->
-        (* this does not handle commas in between kvps *)
-        let builder k v acc = acc ^ "\"" ^ k ^ "\":" ^ to_string v in
-        "{" ^ Hashtbl.fold builder obj "" ^ "}"
+    | Object obj -> (
+        let builder acc tup =
+          let k, v = tup in
+          acc ^ ",\"" ^ k ^ "\":" ^ to_string v
+        in
+        let entry_seq = Hashtbl.to_seq obj in
+        match entry_seq () with
+        | Nil -> "{}"
+        | Seq.Cons (h, t) ->
+            let k, v = h in
+            let first_string = Printf.sprintf "%s:%s" k (to_string v) in
+            "{" ^ Seq.fold_left builder first_string t ^ "}")
 end
 
 let tokens = Scanner.scan program 0
