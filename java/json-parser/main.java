@@ -96,12 +96,14 @@ class Scanner {
 interface Token {}
 
 class OpenCurly implements Token {
+  @Override
   public String toString() {
     return "OpenCurly";
   }
 }
 
 class CloseCurly implements Token {
+  @Override
   public String toString() {
     return "CloseCurly";
   }
@@ -113,14 +115,15 @@ class StringToken implements Token {
   }
 
   final String value;
-  @Override
 
+  @Override
   public String toString() {
     return "StringToken (" + value + ")";
   }
 }
 
 class NullToken implements Token {
+  @Override
   public String toString() {
     return "NullToken";
   }
