@@ -27,7 +27,7 @@ fn tax(income: f32) f32 {
 }
 
 pub fn main() !void {
-    print("Hello, {s}!\n", .{"world"});
+    print("Hello, {s}!\n", "world");
 }
 
 test "$100k -> $13,580" {
