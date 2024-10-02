@@ -53,6 +53,7 @@ int main() {
   ParserValue *doc = parseObject(&listCurrent);
 
   printValue(doc);
+  printf("\n");
 
   return 0;
 }
